@@ -43,7 +43,7 @@ def get_response(api_key, lat, lon):
     response = {}
     weather_info = get_weather_info(api_key, lat, lon)
     response['meme_code'] = get_meme_code(weather_info)
-    response['meme_location'] = 'http://andrewbevelhymer.com/weathermeme/meme/' + response['meme_code'] + '.png'
+    #response['meme_location'] = 'http://andrewbevelhymer.com/weathermeme/meme/' + response['meme_code'] + '.png'
     response['weather_info'] = weather_info
 
     return json.dumps(response)
@@ -55,20 +55,12 @@ def get_response(api_key, lat, lon):
 # to actually become worthwhile. I'm open to pull
 # requests if you are reading this and have ideas
 def get_meme_code(weather_info):
-        rand = random.randint(1, 6)
+    weather_list = weather_info['weather']
+    id_list = []
+    for info in weather_list:
+        id_list.append(info['id'])
 
-        main = weather_info['main']
-        wind = weather_info['wind']
+    for weather_id in id_list:
+        print(weather_id)
 
-        if wind['speed'] > WIND_TRESHOLD:
-                result = "wind" + str(rand)
-        elif main['temp'] > HOT_TRESHOLD:
-            result = "hot_weather" + str(rand)
-        elif main['temp'] < COLD_TRESHOLD:
-            result = "cold_weather" + str(rand)
-        elif main['temp'] < CHILLY_TRESHOLD:
-            result = "chilly" + str(rand)
-        else:
-            result = "neutral" + str(rand)
-
-        return result
+    return id_list

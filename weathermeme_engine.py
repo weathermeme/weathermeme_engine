@@ -39,22 +39,7 @@ def get_weather_info(api_key, lat, lon):
 
     return json.loads(jsonString)
 
-def get_response(api_key, lat, lon):
-    response = {}
-    weather_info = get_weather_info(api_key, lat, lon)
-    response['meme_code'] = get_meme_code(weather_info)
-    #response['meme_location'] = 'http://andrewbevelhymer.com/weathermeme/meme/' + response['meme_code'] + '.png'
-    response['weather_info'] = weather_info
-
-    return json.dumps(response)
-
-# Method that returns the 'meme_code' (filename)
-# of the meme. This is the main algorithm that
-# is pretty crappy right now. This is the part that
-# needs to be improved the most in order for the api
-# to actually become worthwhile. I'm open to pull
-# requests if you are reading this and have ideas
-def get_meme_code(weather_info):
+def get_condition(weather_info):
     weather_list = weather_info['weather']
     id_list = []
     for info in weather_list:

@@ -1,7 +1,6 @@
 import socket
 import sys
 import json
-import random
 
 HOT_TRESHOLD = 80
 COLD_TRESHOLD = 40
@@ -42,11 +41,42 @@ def get_weather_info(api_key, lat, lon):
 
     return json.loads(jsonString)
 
-def get_condition(api_key, lat, lon):
-    weather_info = get_weather_info(api_key, lat, lon)
+def get_owm_weather_id(weather_info):
     weather_list = weather_info['weather']
     id_list = []
     for info in weather_list:
         id_list.append(info['id'])
 
     return id_list
+
+def get_temp(weather_info):
+    return weather_info['main']['temp']
+
+def get_wind_speed(weather_info):
+    return weather_info['wind']['speed']
+
+def get_condition(api_key, lat, lon):
+    weather_info = get_weather_info(api_key, lat, lon)
+    owm_weather_id_list = get_owm_weather_id(weather_info)
+
+    temp = get_temp(weather_info)
+    wind_speed = get_wind_speed(weather_info)
+
+    for weather_id in owm_weather_id_list:
+        if weather_id > 600 and weather_id < 700:
+            return 'snow'
+        elif weather_id > 500 and weather_id < 600 or weather_id > 200 and weather_id < 300:
+            return 'rain'
+
+    if wind_speed > WIND_TRESHOLD:
+        return 'windy'
+    elif temp < COLD_TRESHOLD:
+        return 'cold'
+    elif temp < CHILLY_TRESHOLD:
+        return 'chilly'
+    elif temp < HOT_TRESHOLD:
+        return 'neutral'
+    elif temp >= HOT_TRESHOLD:
+        return 'hot'
+
+    return 'err'

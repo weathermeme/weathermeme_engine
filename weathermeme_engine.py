@@ -28,24 +28,25 @@ def get_weather_info(api_key, lat, lon):
 
     message = "GET /data/2.5/weather?lat=" + str(lat) + "&lon=" + str(lon) + "&appid=" + api_key + "&units=imperial HTTP/1.1\r\nhost: api.openweathermap.org\r\n\r\n"
     try:
-        s.sendall(message)
+        b = message.encode('utf-8')
+        s.sendall(b)
     except socket.error:
         print('Failed to send request, exiting')
         sys.exit()
 
     reply = s.recv(4096)
 
+    reply = reply.decode('utf-8')
+
     jsonString = reply[reply.index('{') : len(reply)]
 
     return json.loads(jsonString)
 
-def get_condition(weather_info):
+def get_condition(api_key, lat, lon):
+    weather_info = get_weather_info(api_key, lat, lon)
     weather_list = weather_info['weather']
     id_list = []
     for info in weather_list:
         id_list.append(info['id'])
-
-    for weather_id in id_list:
-        print(weather_id)
 
     return id_list

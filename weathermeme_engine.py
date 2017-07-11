@@ -1,6 +1,8 @@
 import socket
 import sys
 import json
+import sqlite3
+import random
 
 HOT_TRESHOLD = 80
 COLD_TRESHOLD = 40
@@ -54,6 +56,16 @@ def get_temp(weather_info):
 
 def get_wind_speed(weather_info):
     return weather_info['wind']['speed']
+
+def get_meme_name(api_key, lat, lon):
+    condition = get_condition(api_key, lat, lon)
+    conn = sqlite3.connect('db/memes.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM ' + condition)
+    condition += str(random.randrange(1, len(c.fetchall())+1))
+    c.close()
+    conn.close()
+    return condition
 
 def get_condition(api_key, lat, lon):
     weather_info = get_weather_info(api_key, lat, lon)

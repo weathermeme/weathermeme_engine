@@ -6,7 +6,7 @@ chilly | 1 | > Tmp > 40F && < 60F
 cold | 2 | Tmp < 40F
 hot | 3 | Tmp > 80F < 95F
 neutral | 4 | Tmp < 80F > 60F
-rain | 5 | weather_id > 500 && < 600
+rain | 5 | weather_id > 500 && < 600 || > 200 && < 400
 snow | 6 | weather_id > 600 && < 700
 windy | 7 | wind_speed > 20mph
 

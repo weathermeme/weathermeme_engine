@@ -57,8 +57,19 @@ def get_temp(weather_info):
 def get_wind_speed(weather_info):
     return weather_info['wind']['speed']
 
-def get_meme_name(api_key, lat, lon):
-    condition = get_condition(api_key, lat, lon)
+# This should be the entry point,
+# returns json of all the data, including
+# the location of the meme
+def get_data(api_key, lat, lon):
+    data = {}
+    weather_info = get_weather_info(api_key, lat, lon)
+    data['meme_name'] = get_meme_name(weather_info)
+    data['meme_location'] = 'http://andrewbevelhymer.com/weathermeme/memes/' + data['meme_name'] + '.png'
+    data['weather_info'] = weather_info
+    return json.dumps(data)
+
+def get_meme_name(weather_info):
+    condition = get_condition(weather_info)
     conn = sqlite3.connect('db/memes.db')
     c = conn.cursor()
     c.execute('SELECT * FROM ' + condition)
@@ -67,8 +78,8 @@ def get_meme_name(api_key, lat, lon):
     conn.close()
     return condition
 
-def get_condition(api_key, lat, lon):
-    weather_info = get_weather_info(api_key, lat, lon)
+# This is the algorithm for generating the condition
+def get_condition(weather_info):
     owm_weather_id_list = get_owm_weather_id(weather_info)
 
     temp = get_temp(weather_info)
